@@ -36,16 +36,16 @@ namespace ngraph
         namespace reference
         {
             template <typename T>
-            void batch_norm_three_outputs_with_intermediates(double eps,
-                                                             const T* arg0,
-                                                             const T* arg1,
-                                                             const T* arg2,
-                                                             T* out0,
-                                                             T* out1,
-                                                             T* out2,
-                                                             T* out3,
-                                                             T* out4,
-                                                             const Shape& arg2_shape)
+            void batch_norm_training_with_intermediates(double eps,
+                                                        const T* arg0,
+                                                        const T* arg1,
+                                                        const T* arg2,
+                                                        T* out0,
+                                                        T* out1,
+                                                        T* out2,
+                                                        T* out3,
+                                                        T* out4,
+                                                        const Shape& arg2_shape)
             {
                 auto eps_casted = static_cast<T>(eps);
                 auto channels = arg2_shape[1];
@@ -102,38 +102,38 @@ namespace ngraph
             }
 
             template <typename T>
-            void batch_norm_three_outputs(double eps,
-                                          const T* arg0,
-                                          const T* arg1,
-                                          const T* arg2,
-                                          T* out0,
-                                          T* out1,
-                                          T* out2,
-                                          const Shape& arg2_shape)
+            void batch_norm_training(double eps,
+                                     const T* arg0,
+                                     const T* arg1,
+                                     const T* arg2,
+                                     T* out0,
+                                     T* out1,
+                                     T* out2,
+                                     const Shape& arg2_shape)
             {
                 std::vector<T> centered(shape_size(arg2_shape));
                 std::vector<T> normalized(shape_size(arg2_shape));
-                batch_norm_three_outputs_with_intermediates(eps,
-                                                            arg0,
-                                                            arg1,
-                                                            arg2,
-                                                            out0,
-                                                            out1,
-                                                            out2,
-                                                            centered.data(),
-                                                            normalized.data(),
-                                                            arg2_shape);
+                batch_norm_training_with_intermediates(eps,
+                                                       arg0,
+                                                       arg1,
+                                                       arg2,
+                                                       out0,
+                                                       out1,
+                                                       out2,
+                                                       centered.data(),
+                                                       normalized.data(),
+                                                       arg2_shape);
             }
 
             template <typename T>
-            void batch_norm_one_output(double eps,
-                                       const T* arg0,
-                                       const T* arg1,
-                                       const T* arg2,
-                                       const T* arg3,
-                                       const T* arg4,
-                                       T* out0,
-                                       const Shape& arg2_shape)
+            void batch_norm_inference(double eps,
+                                      const T* arg0,
+                                      const T* arg1,
+                                      const T* arg2,
+                                      const T* arg3,
+                                      const T* arg4,
+                                      T* out0,
+                                      const Shape& arg2_shape)
             {
                 auto eps_casted = static_cast<T>(eps);
                 CoordinateTransform arg2_transform(arg2_shape);
@@ -190,16 +190,16 @@ namespace ngraph
                 std::vector<T> mean(mean_num_elements);
                 std::vector<T> variance(mean_num_elements);
                 std::vector<T> stddev(mean_num_elements);
-                batch_norm_three_outputs_with_intermediates(eps,
-                                                            arg0,
-                                                            arg1,
-                                                            arg2,
-                                                            bn_output.data(),
-                                                            mean.data(),
-                                                            variance.data(),
-                                                            centered.data(),
-                                                            normalized.data(),
-                                                            arg2_shape);
+                batch_norm_training_with_intermediates(eps,
+                                                       arg0,
+                                                       arg1,
+                                                       arg2,
+                                                       bn_output.data(),
+                                                       mean.data(),
+                                                       variance.data(),
+                                                       centered.data(),
+                                                       normalized.data(),
+                                                       arg2_shape);
 
                 for (size_t i = 0; i < mean_num_elements; i++)
                 {
