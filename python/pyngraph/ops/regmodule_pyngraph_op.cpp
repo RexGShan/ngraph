@@ -95,4 +95,5 @@ void regmodule_pyngraph_op(py::module m_op)
     regclass_pyngraph_op_BatchNormInference(m_op);
     regclass_pyngraph_op_BatchNormTrainingBackprop(m_op);
     regclass_pyngraph_op_Softmax(m_op);
+    regclass_pyngraph_op_Result(m_op);
 }
