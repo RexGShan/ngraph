@@ -5466,11 +5466,10 @@ NGRAPH_TEST(${BACKEND_NAME}, batchnorm_fprop_bprop)
     auto func_bn =
         std::make_shared<Function>(NodeVector{bnorm, mean, var}, op::ParameterVector{input, g, b});
 
-    std::vector<std::vector<float>> args = {
-        {0.0f, 4.0f}, // x
-        {1.0f},       // gamma
-        {1.0f},       // beta
-    };
+    std::vector<float> input_arg{0.0f, 4.0f};
+    std::vector<float> gamma_arg{1.0f};
+    std::vector<float> beta_arg{1.0f};
+    std::vector<std::vector<float>> args = {input_arg, gamma_arg, beta_arg};
     auto results = execute(func_bn, args, "${BACKEND_NAME}");
 
     auto rn = results.at(0); // [0, 2]
@@ -5490,7 +5489,7 @@ NGRAPH_TEST(${BACKEND_NAME}, batchnorm_fprop_bprop)
     auto dg = std::make_shared<op::Result>(std::make_shared<op::GetOutputElement>(bn_bp, 1));
     auto db = std::make_shared<op::Result>(std::make_shared<op::GetOutputElement>(bn_bp, 2));
 
-    std::vector<std::vector<float>> bpargs = {rn, {1.0f}, {1.0f}, rm, rv, {1.0f, 1.0f}};
+    std::vector<std::vector<float>> bpargs = {input_arg, gamma_arg, beta_arg, rm, rv, {1.0f, 1.0f}};
 
     auto func = std::make_shared<Function>(ResultVector{dx, dg, db},
                                            op::ParameterVector{input, g, b, m, v, delta});
